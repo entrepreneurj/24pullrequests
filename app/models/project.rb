@@ -12,7 +12,7 @@ class Project < ActiveRecord::Base
                "Logtalk", "Lua", "M", "Markdown", "Matlab", "Max", "Mirah",
                "Monkey", "MoonScript", "Nemerle", "Nimrod", "Nu",
                "Objective-C", "Objective-J", "OCaml", "Omgrofl", "ooc", "Opa",
-               "OpenEdge ABL", "Parrot", "Pascal", "Perl", "PHP", "Pike",
+               "OpenEdge ABL", "Parrot", "Pascal", "Perl", "Perl 6", "PHP", "Pike",
                "PogoScript", "PowerShell", "Processing", "Prolog", "Puppet",
                "Pure Data", "Python", "R", "Racket", "Ragel in Ruby Host",
                "Rebol", "Rouge", "Ruby", "Rust", "Scala", "Scheme", "Scilab",
@@ -25,13 +25,24 @@ class Project < ActiveRecord::Base
 
   validates_presence_of :description, :github_url, :name, :main_language
   validates_format_of :github_url, :with => /\Ahttps?:\/\/(www\.)?github.com\/[\w-]*\/[\w\.-]*(\/)?\Z/i, :message => 'Enter the full HTTP URL.'
-  validates_uniqueness_of :github_url, :message => "Project has already been suggested."
+  validates_uniqueness_of :github_url, :case_sensitive => false ,:message => "Project has already been suggested."
   validates_length_of :description, :within => 20..200
   validates_inclusion_of :main_language, :in => LANGUAGES, :message => 'must be a programming language'
 
   scope :not_owner, lambda {|user| where("github_url" != "github.com/#{user}/") }
   scope :by_language, ->(language) { where("lower(main_language) =?", language.downcase) }
+  scope :by_languages, ->(languages) { where("lower(main_language) IN (?)", languages.map(&:downcase)) }
   scope :active, -> { where(inactive: [ false, nil ]) }
+
+  paginates_per 20
+
+  def self.find_by_github_repo(repository)
+    filter_by_repository(repository).first
+  end
+
+  def self.filter_by_repository(repository)
+    Project.where("github_url like ?", "%#{repository}%")
+  end
 
   def github_repository
     self.github_url.gsub(/^(((https|http|git)?:\/\/(www\.)?)|git@)github.com(:|\/)/i, '').gsub(/(\.git|\/)$/i, '')
@@ -41,11 +52,14 @@ class Project < ActiveRecord::Base
     update_attribute(:inactive, true)
   end
 
-  def self.find_by_github_repo(repository)
-    filter_by_repository(repository).first
+  def issues(github, months_ago=6, options={})
+    date = (Time.now-months_ago.months).utc.iso8601
+    options.merge! since: date
+
+    github.issues(github_repository, options)
   end
 
-  def self.filter_by_repository(repository)
-    Project.where("github_url like ?", "%#{repository}%")
+  def repo(github)
+    github.repo(github_repository)
   end
 end

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Admin Projects' do
   let(:user) { create :user }
-  let!(:projects) { [ "repo1", "repo2"].map { |repo| create :project, github_url: "http://github.com/christmas/#{repo}" } }
+  let!(:projects) { ["apples", "mandarins"].map { |repo| create :project, name: repo, github_url: "http://github.com/christmas/#{repo}" } }
   subject { page }
 
   before do
@@ -21,18 +21,18 @@ describe 'Admin Projects' do
     end
   end
 
-  describe 'managing projects', js: true do
-    it "search for a project" do
-      fill_in "_repository", with: "repo1"
+  describe 'managing projects' do
+    it "search for a project", js: true do
+      fill_in "_repository", with: "apples"
       click_on "Search"
 
       sleep(Capybara.default_wait_time)
 
-      should have_content "repo1"
-      should_not have_content "repo2"
+      should have_content "apples"
+      should_not have_content "mandarins"
     end
 
-    it "editing a project" do
+    it "editing a project", js: true do
       first(:link, "Edit").click
 
       fill_in 'Name', with: 'Pugalicious'

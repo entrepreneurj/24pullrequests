@@ -5,6 +5,7 @@ require "active_record/railtie"
 require "action_controller/railtie"
 require "action_mailer/railtie"
 require "sprockets/railtie"
+require 'open-uri'
 # require "rails/test_unit/railtie"
 
 if defined?(Bundler)
@@ -36,7 +37,7 @@ module Tfpullrequests
 
     config.i18n.default_locale = :en
     config.i18n.fallbacks = true
-    config.i18n.available_locales = [ :en, :el, :es, :pt_br ]
+    config.i18n.available_locales = [ :en, :el, :es, :pt_br, :fi, :fr, :de, :ru, :uk, :th, :it ]
 
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"
@@ -61,6 +62,8 @@ module Tfpullrequests
     config.assets.initialize_on_precompile = false
 
     config.exceptions_app = self.routes
+
+    I18n.config.enforce_available_locales = false
 
     # Memoize at boot up to prevent github's rate limiting. This should work
     # fine for now.

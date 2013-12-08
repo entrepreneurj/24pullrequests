@@ -37,11 +37,13 @@ rbenv global 2.0.0-p353
 ```
 
 Next, you'll need to make sure that you have postgres installed. This can be
-done easily using [Homebrew](http://mxcl.github.com/homebrew/) or by using http://postgresapp.com
+done easily using [Homebrew](http://mxcl.github.com/homebrew/) or by using [http://postgresapp.com](http://postgresapp.com). 
 
 ```bash
 brew install postgres phantomjs
 ```
+
+Please see these [further instructions for installing postgres via homebrew](http://www.mikeball.us/blog/setting-up-postgres-with-homebrew/). 
 
 Now, let's install the gems from the `Gemfile` ("Gems" are synonymous with libraries in other
 languages).
@@ -65,6 +67,9 @@ And we can also add some sample data with the **seed** task
 bundle exec rake db:seed
 ```
 
+If you are working on anything related to the email-generation code, you can use [mailcatcher](https://github.com/sj26/mailcatcher)
+Since we use bundler, please read the [following](https://github.com/sj26/mailcatcher#bundler) before using mailcatcher
+
 Almost there! Now all we have to do is start up the Rails server and point
 our browser to <http://localhost:3000>
 
@@ -81,7 +86,7 @@ Mocha/Konacha is used for unit testing any JavaScript. JavaScript specs
 should be placed in `spec/javascripts`. Run the JavaScript specs with
 `bundle exec rake konacha:serve`.
 
-If you are using the omniauth environment variables 
+If you are using the omniauth environment variables
 (GITHUB_KEY, GITHUB_SECRET, TWITTER_KEY, TWITTER_SECRET)
 for **another** project, you will need to either
  * unset them before running your tests or

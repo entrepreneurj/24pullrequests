@@ -18,19 +18,19 @@ describe ApplicationHelper do
 
   describe '#language_link' do
     it 'returns a link for a language' do
-      helper.language_link('C#').should eql('<a data-language="csharp" href="#">csharp</a>')
+      helper.language_link('C#').should eql('<a data-language="c%23" href="#">c%23</a>')
     end
 
     it 'returns a link with a label' do
-      helper.language_link('C#', 'Foobar').should eql('<a data-language="csharp" href="#">Foobar</a>')
+      helper.language_link('C#', 'Foobar').should eql('<a data-language="c%23" href="#">Foobar</a>')
     end
 
     it 'returns a link for multiple languages' do
-      helper.language_link(['C#', 'Ruby'], 'Foobar').should eql('<a data-language="[&quot;csharp&quot;,&quot;ruby&quot;]" href="#">Foobar</a>')
+      helper.language_link(['C#', 'Ruby'], 'Foobar').should eql('<a data-language="[&quot;c%23&quot;,&quot;ruby&quot;]" href="#">Foobar</a>')
     end
 
     it 'returns a link for multiple languages without a label' do
-      helper.language_link(['C#', 'Ruby']).should eql('<a data-language="[&quot;csharp&quot;,&quot;ruby&quot;]" href="#">csharp, ruby</a>')
+      helper.language_link(['C#', 'Ruby']).should eql('<a data-language="[&quot;c%23&quot;,&quot;ruby&quot;]" href="#">c%23, ruby</a>')
     end
   end
 
@@ -49,6 +49,43 @@ describe ApplicationHelper do
       resulting_html = "<a href=\"https://www.gittip.com/andrew/\"><img alt=\"Support via Gittip\" src=\"https://rawgithub.com/twolfson/gittip-badge/0.1.0/dist/gittip.png\"/> </a>"
 
       helper.gittip_button("andrew").should eql(resulting_html)
+    end
+  end
+
+  describe '#contributing_url' do
+    it 'returns an anchor tag with a link to the contributing section of 24pullrequests when no type is specified' do
+      resulting_html = '<a href="http://24pullrequests.com/contributing">http://24pullrequests.com/contributing</a>'
+      helper.contributing_url.should eql(resulting_html)
+    end
+
+    it 'returns just the url to the contribution section of 24pullrequests when type equals text' do
+      url = 'http://24pullrequests.com/contributing'
+      helper.contributing_url('text').should eql(url)
+    end
+  end
+
+  describe '#twitter_url' do
+    it 'returns an anchor tag with a link to the 24pullrequests page on Twitter when no type is specified' do
+      resulting_html = '<a href="http://twitter.com/24pullrequests">http://twitter.com/24pullrequests</a>'
+      helper.twitter_url.should eql(resulting_html)
+    end
+
+    it 'returns just the url to the 24pullrequests page on Twitter when type equals text' do
+      url = 'http://twitter.com/24pullrequests'
+      helper.twitter_url('text').should eql(url)
+    end
+
+  end
+
+  describe '#preferences_url' do
+    it 'returns an anchor tag with a link to the preferences section of 24pullrequests when no type is specified' do
+      resulting_html = '<a href="http://24pullrequests.com/preferences">http://24pullrequests.com/preferences</a>'
+      helper.preferences_url.should eql(resulting_html)
+    end
+
+    it 'returns just the url to the preferences section of 24pullrequests when type equals text' do
+      url = 'http://24pullrequests.com/preferences'
+      helper.preferences_url('text').should eql(url)
     end
   end
 
