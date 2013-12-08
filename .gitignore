@@ -16,3 +16,6 @@ coverage
 
 Thumbs.db
 .ruby-gemset
+
+# Ignore configurations
+/config/*.yml
