@@ -9,6 +9,10 @@ class PullRequestDownloader
     @pull_requests ||= download_pull_requests
   end
 
+  def user_organisations
+    @user_organisations ||= download_user_organisations
+  end
+
   private
   def github_client
     @github_client ||= Octokit::Client.new(:login => login, :access_token => oauth_token, :auto_paginate => true)
@@ -26,8 +30,39 @@ class PullRequestDownloader
       end
     rescue => e
       puts e.inspect
-      puts 'likely a Github api error occurred'
+      puts 'Pull requests: likely a Github api error occurred'
       []
     end
   end
+
+  def download_user_organisations
+    begin
+      github_client.organizations(login).reject do |o|
+        puts "Updating organisation: #{o.login}"
+        ignored_organisations.include?(o.login)
+      end
+    rescue e
+      puts e.inspect
+      puts 'Organisation error: likely a Github api error occurred'
+      []
+    end
+  end
+
+  def ignored_organisations
+    [
+      'coderwall-altruist',
+      'coderwall-charity',
+      'coderwall-kona',
+      'coderwall-cub',
+      'coderwall-earlyadopter',
+      'coderwall-forked',
+      'coderwall-komododragon',
+      'coderwall-mongoose',
+      'coderwall-mongoose3',
+      'coderwall-octopussy',
+      'coderwall-raven',
+      'coderwall-polygamous'
+    ]
+  end
+
 end

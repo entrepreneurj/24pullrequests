@@ -6,10 +6,14 @@ Tfpullrequests::Application.routes.draw do
   get "/locale/:locale", to: "dashboards#locale", as: :locale
   resources :gifts
   resources :users
+
+  resources :organisations
+
   get '/users/:id/:year', :to => 'users#show'
 
   resources :projects, :only => [:index, :new, :create, :edit, :update, :destroy] do
     collection do
+      get :filter
       post :claim
     end
   end
@@ -37,6 +41,8 @@ Tfpullrequests::Application.routes.draw do
 
   match '/auth/:provider/callback', :to => 'sessions#create', :via => [:get, :post]
   post '/auth/failure',             :to => 'sessions#failure'
+
+  post '/auth/coderwall',           :to => 'coderwall#authorize', :as => 'update_coderwall'
 
   get 'about', :to => 'static#about'
   get 'api', :to => 'static#api'

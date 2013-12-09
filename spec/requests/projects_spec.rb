@@ -23,7 +23,7 @@ describe 'Projects' do
       click_link 'Suggest a project'
       fill_in 'Name', :with => Faker::Lorem.words.first
       fill_in 'Github url', :with => 'http://github.com/akira/24pullrequests'
-      fill_in 'Summary', :with => Faker::Lorem.paragraphs.first
+      fill_in 'Summary', :with => Faker::Lorem.paragraphs.first[0..199]
       fill_in 'Main language', :with => 'Ruby'
       click_on 'Submit Project'
 
@@ -70,7 +70,7 @@ describe 'Projects' do
         first(:link, "Java").click
 
         within '#projects' do
-          page.should_not have_css('.ruby')
+          page.should have_no_css('.ruby')
           page.should have_css('.java')
         end
       end
@@ -79,7 +79,7 @@ describe 'Projects' do
         click_link 'Suggested for you'
         within '#projects' do
           page.should have_css('.ruby')
-          page.should_not have_css('.java')
+          page.should have_no_css('.java')
         end
       end
 
@@ -115,7 +115,7 @@ describe 'Projects' do
         page.should have_css('.python')
       end
 
-      it "can deactives a project" do
+      it "can deactive a project" do
         first(:link, "Deactive").click
 
         should have_content "#{user_project.name} has been deactivated."

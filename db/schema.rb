@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131201095112) do
+ActiveRecord::Schema.define(version: 20131207221510) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,21 @@ ActiveRecord::Schema.define(version: 20131201095112) do
 
   add_index "gifts", ["user_id", "pull_request_id"], name: "index_gifts_on_user_id_and_pull_request_id", unique: true, using: :btree
 
+  create_table "organisations", force: true do |t|
+    t.string   "login"
+    t.string   "avatar_url"
+    t.integer  "github_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "organisations", ["login"], name: "index_organisations_on_login", unique: true, using: :btree
+
+  create_table "organisations_users", force: true do |t|
+    t.integer "user_id"
+    t.integer "organisation_id"
+  end
+
   create_table "projects", force: true do |t|
     t.string   "name"
     t.text     "description"
@@ -35,6 +50,19 @@ ActiveRecord::Schema.define(version: 20131201095112) do
     t.datetime "updated_at"
     t.integer  "user_id"
     t.boolean  "inactive"
+  end
+
+  create_table "pull_request_archives", force: true do |t|
+    t.string   "title"
+    t.string   "issue_url"
+    t.text     "body"
+    t.string   "state"
+    t.boolean  "merged"
+    t.datetime "created_at"
+    t.string   "repo_name"
+    t.integer  "user_id"
+    t.string   "language"
+    t.integer  "comments_count", default: 0
   end
 
   create_table "pull_requests", force: true do |t|
@@ -78,6 +106,7 @@ ActiveRecord::Schema.define(version: 20131201095112) do
     t.string   "twitter_nickname"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
+    t.string   "coderwall_user_name"
   end
 
   add_index "users", ["nickname"], name: "index_users_on_nickname", unique: true, using: :btree
